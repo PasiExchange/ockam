@@ -48,6 +48,9 @@ tracing = "0.1"
 rand = "0.8"
 hex = { version = "0.4", default-features = false }
 
+[patch.crates-io]
+ockam_channel = { path = "../ockam_channel" }
+
 [dev-dependencies]
 ockam_vault_sync_core = { path = "../ockam_vault_sync_core", version = "0.16.0-dev"         }
 ockam_key_exchange_xx = { path = "../ockam_key_exchange_xx", version = "0.17.0-dev"         }
