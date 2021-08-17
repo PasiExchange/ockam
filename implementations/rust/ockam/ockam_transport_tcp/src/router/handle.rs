@@ -41,6 +41,8 @@ impl TcpRouterHandle {
         );
         let self_addr = pair.tx_addr();
 
+        println!("ffkf");
+
         self.ctx
             .send(
                 self.addr.clone(),
