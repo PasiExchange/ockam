@@ -48,6 +48,8 @@ impl PokSignature {
             .map(|m| m.get_message())
             .collect::<Vec<Message, 128>>();
 
+        println!("hey");
+
         let b = Signature::compute_b(signature.s, m.as_ref(), generators);
 
         let a_prime = signature.a * r1;
