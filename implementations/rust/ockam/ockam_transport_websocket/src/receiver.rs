@@ -40,6 +40,8 @@ where
                 break;
             }
 
+            println!("dkkd");
+
             let ws_msg = match self.ws_stream.next().await {
                 Some(res) => match res {
                     Ok(ws_msg) => ws_msg,
