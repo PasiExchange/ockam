@@ -2,7 +2,7 @@ name: Gradle
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onpushpull_requestpaths
     paths:
       - '**.gradle'
