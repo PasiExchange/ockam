@@ -31,6 +31,8 @@ where
             let item = DEFAULT_VAULTS.get_object(context.handle())?;
             let mut item = item.lock().unwrap();
 
+            println!("jjddg");
+
             callback(item.deref_mut())
         }
     }
