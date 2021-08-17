@@ -18,6 +18,8 @@ impl KeyIdVault for SoftwareVault {
             .ok_or_else(|| Into::<ockam_core::Error>::into(VaultError::SecretNotFound))?
             .0;
 
+        println!("fjfj");
+
         Ok(Secret::new(*index))
     }
 
