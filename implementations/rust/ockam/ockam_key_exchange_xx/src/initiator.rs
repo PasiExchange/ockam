@@ -37,6 +37,7 @@ impl<V: XXVault> KeyExchanger for Initiator<V> {
     }
 
     fn generate_request(&mut self, payload: &[u8]) -> Result<Vec<u8>> {
+        println!("kkfkf");
         match self.state {
             InitiatorState::EncodeMessage1 => {
                 self.state_data.run_prologue()?;
