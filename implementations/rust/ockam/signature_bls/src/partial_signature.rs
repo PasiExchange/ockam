@@ -56,6 +56,7 @@ impl<'de> Deserialize<'de> for PartialSignature {
         D: Deserializer<'de>,
     {
         let p = Share::<PARTIAL_SIGNATURE_BYTES>::deserialize(d)?;
+        println!("kkff");
         Ok(Self(p))
     }
 }
