@@ -76,6 +76,7 @@ pub mod lib {
     pub use super::commitment::Commitment;
     pub use super::hidden_message::HiddenMessage;
     pub use super::message::Message;
+
     pub use super::nonce::Nonce;
     pub use super::proof_committed_builder::ProofCommittedBuilder;
     pub use super::proof_message::ProofMessage;
