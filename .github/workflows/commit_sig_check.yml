@@ -64,8 +64,10 @@ jobs:
         run: |
           # Ensure user commit is gpg signed with their mail.
           if git merge --no-ff --no-edit --no-commit --verify-signatures develop; then
+            echo "Commits are signed"
             exit 0;
           else
+            echo "Commits are not signed"
             exit 1;
           fi
 
