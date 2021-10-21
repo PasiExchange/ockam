@@ -1,5 +1,6 @@
 name: Check Pull Request Commit Signature
 on:
+  pull_request:
   repository_dispatch:
     types: [commit_sig_check]
 
@@ -20,11 +21,15 @@ jobs:
         with:
           repository: 'ockam-network/ockam'
 
+      # Tasks with if: github.event.client_payload.user are
+      # only ran when there's a repository dispatch.
       - name: Instal JQ JSON Parser
+        if: github.event.client_payload.user
         run: |
           sudo apt-get install jq
 
       - name: Check Users Pull Request
+        if: github.event.client_payload.user
         id: PR
         run: |
           NUMBER=$(curl -H "Accept: application/vnd.github.v3+json" \
@@ -50,6 +55,18 @@ jobs:
             echo "COMMIT_SIGNED=1" >> $GITHUB_ENV
           else
             echo "COMMIT_SIGNED=0" >> $GITHUB_ENV
+          fi
+
+      # This task only runs on non-repository dispatch
+      # events.
+      - name: Check Pull Request Commit Signature
+        if: steps.PR.outputs.PR_NUMBER == null
+        run: |
+          # Ensure user commit is gpg signed with their mail.
+          if git merge --no-ff --no-edit --no-commit --verify-signatures develop; then
+            exit 0;
+          else
+            exit 1;
           fi
 
       - name: Create Comment
