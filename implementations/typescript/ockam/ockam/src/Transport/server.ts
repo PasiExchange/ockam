@@ -18,7 +18,7 @@ wss.on('connection', function connection(ws) {
 
       // take the websocket message and go through every client
       // then foreach client it would check if connection is open
-      // if connection is open then it would send the message
+      // if connection is open then it would send the message so this could work with multiple clients easily
       wss.clients.forEach(function each(client) {
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(message);
@@ -26,7 +26,7 @@ wss.on('connection', function connection(ws) {
       });
     });
 });
-  
+
 
 app.get('/', (req: Request, res: Response) => res.send('Hello Ockam'))
 
