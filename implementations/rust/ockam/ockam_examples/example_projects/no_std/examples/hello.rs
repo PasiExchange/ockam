@@ -13,14 +13,14 @@ mod allocator;
 #[cfg(feature = "cortexm")]
 use panic_semihosting as _;
 
-#[cfg(feature = "cortexm")]
-use cortex_m_semihosting::debug;
 
 #[cfg(feature = "cortexm")]
 use ockam::{
     compat::string::{String, ToString},
-    println,
 };
+
+#[cfg(feature = "cortexm")]
+use ockam_core::println;
 
 #[cfg(feature = "atsame54")]
 use atsame54_xpro as _;
@@ -31,22 +31,45 @@ use stm32f4xx_hal as _;
 #[cfg(feature = "cortexm")]
 #[cortex_m_rt::entry]
 fn entry() -> ! {
+    // initialize allocator
     #[cfg(feature = "alloc")]
-    allocator::init();
+    {
+        allocator::init();
+    }
 
-    main().unwrap();
+    // register tracing subscriber
+    #[cfg(feature = "cortexm")]
+    {
+        use hello_ockam_no_std::tracing_subscriber;
+        tracing_subscriber::register();
+    }
+
+    // execute main program entry point
+    match main() {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error executing main program entry point: {:?}", e);
+        }
+    }
+
+    // exit qemu
+    #[cfg(feature = "cortexm")]
+    {
+        use cortex_m_semihosting::debug;
+        debug::exit(debug::EXIT_SUCCESS);
+    }
 
     loop {}
 }
 
 // - ockam::node entrypoint ---------------------------------------------------
 
-use ockam::{route, Context, Identity, Result, TrustEveryonePolicy, Vault};
+use ockam::{route, Context, identity::{Identity, TrustEveryonePolicy}, vault::Vault, Result};
 
 #[ockam::node]
 async fn main(mut ctx: Context) -> Result<()> {
     // Create a Vault to safely store secret keys for Alice and Bob.
-    let vault = Vault::create(&ctx).await?;
+    let vault = Vault::create();
 
     // Create an Identity to represent Bob.
     let mut bob = Identity::create(&ctx, &vault).await?;
@@ -79,12 +102,6 @@ async fn main(mut ctx: Context) -> Result<()> {
 
     // Stop all workers, stop the node, cleanup and return.
     let result = ctx.stop().await;
-
-    // exit qemu
-    #[cfg(feature = "cortexm")]
-    {
-        debug::exit(debug::EXIT_SUCCESS);
-    }
 
     result
 }

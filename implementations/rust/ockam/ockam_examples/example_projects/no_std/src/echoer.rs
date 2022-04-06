@@ -4,8 +4,9 @@ use ockam::{
         boxed::Box,
         string::String
     },
-    println
 };
+#[cfg(all(not(feature = "std"), feature = "cortexm"))]
+use ockam_core::println;
 use ockam::{Context, Result, Routed, Worker};
 
 pub struct Echoer;
