@@ -21,7 +21,7 @@ RUN find /dpkg/ -type d -empty -delete && \
 
 
 # Stage 2 - Build elixir release of ockam_cloud_node elixir app
-FROM ghcr.io/build-trust/ockam-builder@sha256:3ea4c222da220c69b62a60d42d83769286e07bf8e41ef7cfdbeba18b7f22a488 as elixir-app-release-build
+FROM ghcr.io/build-trust/ockam-builder@sha256:2d776ca29c80d080433ee255668b7897b8efd3a0773b80674cb345bda6d6b67e as elixir-app-release-build
 COPY . /work
 RUN set -xe; \
     cd implementations/elixir; \
