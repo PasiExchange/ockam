@@ -57,7 +57,7 @@ while [[ ! -z ${packages[@]} ]]; do
         # Check all package dependencies if there are any
         # that hasn't been indicated to be uploaded.
         for dep in ${deps[@]}; do
-            if [[ ${sorted_packages_map[$dep]} == false ]]; then
+            if [[ ${sorted_packages_map[$dep]} == false && $dep != $package ]]; then
                 sorted=false
             fi
         done
