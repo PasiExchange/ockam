@@ -1,25 +1,31 @@
-use ockam_core::async_trait;
-use ockam_core::compat::{boxed::Box, vec::Vec};
-use ockam_core::{Address, Any, LocalMessage, Result, Routed, TransportMessage, Worker};
+use crate::channel::addresses::Addresses;
+use crate::channel::common::SecureChannelVault;
+use crate::channel::encryption_helper::EncryptionHelper;
+use ockam_core::compat::boxed::Box;
+use ockam_core::{async_trait, Address, Encodable, Route};
+use ockam_core::{Any, Result, Routed, TransportMessage, Worker};
 use ockam_node::Context;
 use tracing::debug;
 
-pub(crate) struct EncryptorWorker {
-    is_initiator: bool,
-    remote_identity_secure_channel_address: Address,
-    local_secure_channel_address: Address,
+pub(crate) struct EncryptorWorker<V: SecureChannelVault> {
+    addresses: Addresses,
+    remote_route: Route,
+    remote_backwards_compatibility_address: Address,
+    encryption_helper: EncryptionHelper<V>,
 }
 
-impl EncryptorWorker {
+impl<V: SecureChannelVault> EncryptorWorker<V> {
     pub fn new(
-        is_initiator: bool,
-        remote_identity_secure_channel_address: Address,
-        local_secure_channel_address: Address,
+        addresses: Addresses,
+        remote_route: Route,
+        remote_backwards_compatibility_address: Address,
+        encryption_helper: EncryptionHelper<V>,
     ) -> Self {
         Self {
-            is_initiator,
-            remote_identity_secure_channel_address,
-            local_secure_channel_address,
+            addresses,
+            remote_route,
+            remote_backwards_compatibility_address,
+            encryption_helper,
         }
     }
 
@@ -28,37 +34,41 @@ impl EncryptorWorker {
         ctx: &mut <Self as Worker>::Context,
         msg: Routed<<Self as Worker>::Message>,
     ) -> Result<()> {
-        debug!(
-            "IdentitySecureChannel {} received Encrypt",
-            if self.is_initiator {
-                "Initiator"
-            } else {
-                "Responder"
-            }
-        );
+        debug!("SecureChannel received Encrypt");
 
         let mut onward_route = msg.onward_route();
-        let return_route = msg.return_route();
-        let payload = msg.payload().to_vec();
+        let mut return_route = msg.return_route();
+        let transport_message = msg.into_transport_message();
+        let payload = transport_message.payload;
 
-        // Send to the other party using local regular SecureChannel
-        let _ = onward_route.step()?;
-        let onward_route = onward_route
+        // Remove our address
+        let _ = onward_route.step();
+        // Add backwards compatibility address to simulate old behaviour
+        onward_route
             .modify()
-            .prepend(self.remote_identity_secure_channel_address.clone())
-            .prepend(self.local_secure_channel_address.clone());
+            .prepend(self.remote_backwards_compatibility_address.clone());
 
-        let transport_msg = TransportMessage::v1(onward_route, return_route, payload);
+        // Add backwards compatibility address to simulate old behaviour
+        return_route
+            .modify()
+            .prepend(self.addresses.decryptor_backwards_compatibility.clone());
 
-        ctx.forward(LocalMessage::new(transport_msg, Vec::new()))
-            .await?;
+        let msg = TransportMessage::v1(onward_route, return_route, payload.to_vec());
+        let payload = msg.encode()?;
 
-        Ok(())
+        let payload = self.encryption_helper.encrypt(payload.as_slice()).await?;
+
+        ctx.send_from_address(
+            self.remote_route.clone(),
+            payload,
+            self.addresses.encryptor.clone(),
+        )
+        .await
     }
 }
 
 #[async_trait]
-impl Worker for EncryptorWorker {
+impl<V: SecureChannelVault> Worker for EncryptorWorker<V> {
     type Message = Any;
     type Context = Context;
 

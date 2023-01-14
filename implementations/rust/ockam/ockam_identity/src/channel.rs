@@ -1,20 +1,25 @@
-mod encryptor;
-pub(crate) use encryptor::*;
+mod addresses;
 mod decryptor;
-pub(crate) use decryptor::*;
+mod decryptor_state;
+mod encryption_helper;
+mod encryptor;
 mod listener;
-pub(crate) use listener::*;
 mod messages;
-pub(crate) use messages::*;
-mod trust_policy;
-pub use trust_policy::*;
-pub mod access_control;
+
+mod common;
 mod local_info;
-pub use local_info::*;
 mod registry;
+mod trust_policy;
+pub use common::*;
+pub use local_info::*;
 pub use registry::*;
+pub use trust_policy::*;
+
+pub mod access_control;
 
 use crate::authenticated_storage::AuthenticatedStorage;
+use crate::channel::decryptor::DecryptorWorker;
+use crate::channel::listener::IdentityChannelListener;
 use crate::{Identity, IdentityVault};
 use core::time::Duration;
 use ockam_core::compat::sync::Arc;

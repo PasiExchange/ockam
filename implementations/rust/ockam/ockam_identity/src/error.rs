@@ -20,6 +20,7 @@ pub enum IdentityError {
     InvalidCredentialFormat,
     UnknownAuthority,
     CredentialVerificationFailed,
+    InvalidNonce,
 }
 
 impl ockam_core::compat::error::Error for IdentityError {}
