@@ -46,7 +46,7 @@ jobs:
 
       - name: Check If Mergify PR State Is Frozen
         run: |
-          if cat .github/mergify.yml | grep '#- schedule: Mon-Sun'; then
+          if cat .github/mergify.yml | grep '#- -files~=^(implementations/rust)'; then
             current_state="unfreeze"
           else
             current_state="freeze"
