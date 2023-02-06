@@ -22,6 +22,7 @@ defmodule Ockam.CloudNode do
     crontab = Keyword.get(config, :crontab)
     idle_timeout = Keyword.get(config, :idle_timeout)
     cleanup_kafka_topics = Keyword.get(config, :cleanup_kafka_topics)
+    IO.puts("Hello there")
 
     case {crontab, idle_timeout} do
       {tab, timeout} when is_binary(tab) and is_integer(timeout) ->
