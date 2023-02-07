@@ -3,5 +3,6 @@
 // with the `ockam` crate.
 
 fn main() {
+    // Merging unmergeable
     ockam_command::run()
 }
