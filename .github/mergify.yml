@@ -29,10 +29,10 @@ pull_request_rules:
         # has to be the author of the PR and the PR must
         # have a label named `release`.
         - and:
-          - "author=@developers"
           - "approved-reviews-by=@approvers"
           - "#approved-reviews-by>=1"
           - "#changes-requested-reviews-by=0"
+          - "author=@developers"
           - label=release
       ####
       # The following checks should've succeeded
