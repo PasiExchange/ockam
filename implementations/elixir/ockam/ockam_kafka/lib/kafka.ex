@@ -21,6 +21,7 @@ defmodule Ockam.Kafka do
 
   def topic(stream_name, options) do
     prefix = Keyword.get(options, :topic_prefix, "")
+
     prefix <> stream_name
   end
 
