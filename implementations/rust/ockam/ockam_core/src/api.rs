@@ -94,6 +94,7 @@ pub fn forbidden<'a>(r: &'a Request, m: &'a str) -> ResponseBuilder<Error<'a>> {
     if let Some(m) = r.method() {
         e = e.with_method(m)
     }
+
     Response::builder(r.id(), Status::Forbidden).body(e)
 }
 
