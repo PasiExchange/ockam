@@ -22,7 +22,7 @@ pull_request_rules:
           - "#changes-requested-reviews-by=0"
           # During code freeze the below rule is un-commented
           # we block Rust changes in implementations/rust path
-          - -files~=^(implementations/rust)
+          #- -files~=^(implementations/rust)
         # Ability to bypass code freeze in scenarios
         # where we need to to merge crate bump and changelog PR
         # To merge during a code freeze, an Ockam develop
