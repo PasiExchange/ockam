@@ -27,7 +27,6 @@ members = [
   "tools/docs/example_blocks",
   "tools/docs/example_test_helper",
 ]
-
 # Coverage profile for generating code coverage with grcov.
 #
 # See https://github.com/rust-lang/rust/issues/78011.

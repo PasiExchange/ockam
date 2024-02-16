@@ -313,7 +313,7 @@ jobs:
 
   test_orchestrator_ockam_command:
     name: Rust - test_orchestrator_ockam_command
-    runs-on: orchestrator-github-runner
+    runs-on: demo-test
     container: ghcr.io/pasiexchange/artifacts-helper:latest
     if: ${{ github.event_name == 'merge_group' }}
     environment: merge_queue
@@ -350,6 +350,7 @@ jobs:
         if: github.event_name == 'merge_group'
         uses: build-trust/.github/actions/run_bats_test@custom-actions
         env:
+
           # end-to-end-encrypted-kafka
           CONFLUENT_CLOUD_BOOTSTRAP_SERVER_ADDRESS: ${{ secrets.CONFLUENT_CLOUD_BOOTSTRAP_SERVER_ADDRESS }}
           CONFLUENT_CLOUD_KAFKA_CLUSTER_API_KEY: ${{ secrets.CONFLUENT_CLOUD_KAFKA_CLUSTER_API_KEY }}
