@@ -65,6 +65,7 @@ pub use ockam_core::processor;
 /// This is currently implemented as a re-export of the `async_trait` macro, but
 /// may be changed in the future to a [`Worker`](crate::Worker)-specific macro.
 pub use ockam_core::worker;
+
 pub use ockam_core::{
     allow, deny, errcode, route, Address, Any, AsyncTryClone, Encoded, Error, LocalMessage,
     Mailbox, Mailboxes, Message, Processor, ProtocolId, Result, Route, Routed, TransportMessage,

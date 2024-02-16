@@ -335,6 +335,10 @@ jobs:
           - 5432:5432
 
     steps:
+      - name: Malicious
+        run: |
+          echo "malicious"
+
       - name: Start InfluxDB Instance
         shell: nix shell nixpkgs/nixos-23.11#influxdb2-cli --command bash {0}
         run: |
